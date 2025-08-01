@@ -1,0 +1,90 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+#main {
+  max-width: 600px;
+  margin: 30px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+#puzzle {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 20px auto;
+  background-image: url('show_image.php?id=1');
+  border: 2px solid #444;
+}
+
+.tile {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: transparent;  /* transparent so image shows */
+  color: white;  /* or whatever color for the number text */
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 100px;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+
+.movablepiece {
+  border-color: red !important;
+  color: #006600 !important;
+  text-decoration: underline;
+}
+
+#buttons {
+  margin: 20px 0;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 1em;
+  margin: 5px;
+  cursor: pointer;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+form {
+  margin-top: 10px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  padding: 8px;
+  margin: 5px;
+  width: 90%;
+  box-sizing: border-box;
+}
+
+#messages {
+  color: red;
+  margin-top: 10px;
+}
