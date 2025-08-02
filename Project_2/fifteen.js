@@ -7,19 +7,22 @@ let saveButton = document.getElementById("save-button");
 let timer = 0;
 let timerId;
 let moveCount = 0;
+let gameWon = false;
 
 let tiles = [];
 let emptyX = 3;
 let emptyY = 3;
-const size = 4;
+let size = 4;
 
-function init(backgroundImageUrl = null) {
+function init(backgroundImageUrl = null, customSize = null) {
   puzzle.innerHTML = "";
+  if (customSize) size = customSize;
   tiles = [];
   emptyX = 3;
   emptyY = 3;
   timer = 0;
   moveCount = 0;
+  gameWon = false;
   clearInterval(timerId);
   timerId = setInterval(() => timer++, 1000);
 
@@ -55,43 +58,84 @@ function init(backgroundImageUrl = null) {
       puzzle.appendChild(tile);
     }
   }
+
+  shuffle(); // Automatically shuffle at game start
 }
 
 function canMove(x, y) {
   return (Math.abs(emptyX - x) + Math.abs(emptyY - y)) === 1;
 }
 
-function moveTile(e) {
+function moveTile(e, silent = false) {
+  if (gameWon && !silent) return;
+
   let tile = e.target;
   let x = parseInt(tile.dataset.x);
   let y = parseInt(tile.dataset.y);
 
   if (canMove(x, y)) {
-    // Move tile visually
     tile.style.left = emptyX * 100 + "px";
     tile.style.top = emptyY * 100 + "px";
 
-    // Swap dataset coordinates
     tile.dataset.x = emptyX;
     tile.dataset.y = emptyY;
 
-    // Update empty tile position
     emptyX = x;
     emptyY = y;
 
-    moveCount++;
+    if (!silent) moveCount++;
+
+    if (!silent && isSolved()) {
+      gameWon = true;
+      clearInterval(timerId);
+      alert(`You solved it in ${moveCount} moves and ${timer} seconds!`);
+      saveGame();
+    }
   }
 }
 
+
+let moveHistory = [];
+
 function shuffle() {
+  moveHistory = []; // reset
+
   for (let i = 0; i < 300; i++) {
     let neighbors = tiles.filter(t => canMove(parseInt(t.dataset.x), parseInt(t.dataset.y)));
     if (neighbors.length > 0) {
       let tile = neighbors[Math.floor(Math.random() * neighbors.length)];
-      moveTile({ target: tile });
+      moveTile({ target: tile }, true); // pass flag to suppress autosave
+      moveHistory.push(tile); // store move for autosolve
     }
   }
+  moveCount = 0;
+  timer = 0;
 }
+
+let autosolveButton = document.getElementById("autosolve-button");
+if (autosolveButton) autosolveButton.addEventListener("click", autosolve);
+
+function autosolve() {
+  if (!moveHistory || moveHistory.length === 0) {
+    alert("No move history available.");
+    return;
+  }
+
+  let i = moveHistory.length - 1;
+  let interval = setInterval(() => {
+    if (i < 0) {
+      clearInterval(interval);
+      if (isSolved()) {
+        alert("Puzzle auto-solved!");
+      }
+      return;
+    }
+
+    moveTile({ target: moveHistory[i] }, true); // silent
+    i--;
+  }, 100);
+}
+
 
 function saveGame() {
   const moves = moveCount;
@@ -122,10 +166,13 @@ function isSolved() {
   });
 }
 
-if (shuffleButton) shuffleButton.addEventListener("click", shuffle);
+if (shuffleButton) shuffleButton.addEventListener("click", () => {
+  init(window.backgroundImageUrl || null); // re-init with shuffle
+});
+
 if (saveButton) saveButton.addEventListener("click", saveGame);
 
-// Initialize on page load with optional background image URL from PHP injected as window.backgroundImageUrl
-window.onload = function() {
-  init(window.backgroundImageUrl || null);
+window.onload = function () {
+  const preferredSize = parseInt(window.userPreferredSize || "4");
+  init(window.backgroundImageUrl || null, preferredSize);
 };

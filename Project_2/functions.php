@@ -81,3 +81,26 @@ function delete_image($image_id) {
     $stmt = $pdo->prepare("DELETE FROM background_images WHERE image_id = ?");
     $stmt->execute([$image_id]);
 }
+
+function save_user_preferences($user_id, $background_image, $puzzle_size) {
+    global $pdo;
+
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM user_preferences WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        $exists = $stmt->fetch();
+
+        if ($exists) {
+            $stmt = $pdo->prepare("UPDATE user_preferences SET background_image = ?, puzzle_size = ? WHERE user_id = ?");
+            $stmt->execute([$background_image, $puzzle_size, $user_id]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO user_preferences (user_id, background_image, puzzle_size) VALUES (?, ?, ?)");
+            $stmt->execute([$user_id, $background_image, $puzzle_size]);
+        }
+
+        return true;  // success
+    } catch (Exception $e) {
+        // Log error if needed: $e->getMessage()
+        return false; // failure
+    }
+}

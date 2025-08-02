@@ -1,0 +1,8 @@
+https://codd.cs.gsu.edu/~bwalker76/WP/PW/P2/fifteen.php
+
+Leader: Brian Walker
+Project Name: Fifteen Puzzle
+Description: This is a fifteen puzzle using HTML, CSS, JavaScript, and PHP
+Team Members: Brian Walker Responsibilities: ALL
+Benefits of Project Methodology:
+Sprints are probably the best use of this methodology. They are short spans in which a certain version of the project was worked on and it allows me to group all of that work in a sort of version control to go back to if I mess up a newer version of the game. It also gave me milestones and focus on particular features, making it easier to focus on specific parts of the project. 

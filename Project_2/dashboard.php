@@ -35,10 +35,6 @@ $username = get_current_username();
             <li><a href="stats.php">View My Stats</a></li>
         </ul>
 
-        
-
-
-
         <br>
         <a href="logout.php">Logout</a>
     </div>
